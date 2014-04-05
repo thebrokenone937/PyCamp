@@ -1,0 +1,38 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/js/jquery.colorbox.js"></script>
+	
+  <h1>Edit Todo</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>Todo edited successfully</b>
+    
+    <script>
+    	{% if action == 'todoPage' %}
+    		parent.location.href = '/projects/show-todo/{{ todoId }}'
+    	{% else %}
+    		parent.displayList('{{ listId }}');
+    	{% endif %}
+    	parent.$.fn.colorbox.close();
+    </script>
+  {% else %}
+  
+  <form method="POST" name="editTodo" action="/projects/edit-todo/{{ todoId }}/{{ listId }}">
+      <textarea rows="8" cols="80" name="title">{{ title }}</textarea><br />
+      Assign To: <select name="todoUser">
+      {% for project, user in projectUsers %}
+      <option value="{{ user.id }}" {% if todoUser == user.id %} selected="selected" {% endif %} >{{ user.username }}</option>  
+         
+      {% endfor %}
+      </select>
+      <br />
+   <input type="hidden" name="action" value="{{ action }}" />   
+   <input type="hidden" name="todoId" value="{{ todoId }}" />
+   <input type="hidden" name="token" value="{{ token }}" />
+   <br /><input type="submit" name="submit" value="Edit" />
+  </form>
+  
+  {% endif %}

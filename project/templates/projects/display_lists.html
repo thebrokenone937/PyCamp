@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block title %}{{ projectTitle }}{% endblock %}
+{% block content %} 
+  <h1>{{ projectTitle }} <a class="editProject" href="/projects/edit-project/{{ projectId }}">(Edit)</a></h1>
+  <i>{{ description }}</i> <br /> <hr /> <br />
+  
+  {% if not error %}
+  <h2>Discussions</h2> <br /> 
+  
+  <table border="0" cellpadding="5" cellspacing="5">
+  {% for todo, comment, user, list in projectComments %}
+    <tr>
+  	<td style="border-right: 1px solid #ccc">{{ user.username }}</td>
+  	<td style="width: 100px; border-right: 1px solid #ccc"><a href="/projects/show-todo/{{ todo.id }}">{{ todo.name }}</a></td>
+  	<td style="width: 500px; border-right: 1px solid #ccc">{{ comment.comment }}</td>
+  	<td>{{ comment.created }}</td>
+  	</tr>
+  {% endfor %}
+  </table>
+  
+  <br /><br />
+  
+  <h2 class="inliner">To-Do Lists</h2> 
+  
+  <div class="genericbutton">
+	<a href="/projects/create-list/{{ projectId }}">Add To-Do List</a>
+  </div>
+
+  <br /><br />
+  
+  {% for list in lists %}
+  <div id="list_{{ list.id }}" ondrop="drop(event, '{{ list.id }}')" ondragover="allowDrop(event, '{{ list.id }}')" ondragleave="changeListColor(event, '{{ list.id }}')">    
+    
+	<a class="editList" href="/projects/edit-list/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+    <a href="javascript:void(0);" onclick="deleteList('{{ list.id }}');"><img src="/static/images/bin.png" width="18" height="18" border="0" /></a>
+    <a href="/projects/show-list/{{ list.id }}" class="todolist">{{ list.name }}</a>
+  	<br /><br />
+  	{% if list.id in todos %}
+  	  {% for todo in todos[list.id].itervalues() %}
+
+      <div id="todo_{{ todo.id }}">
+		<a class="editTodo" href="/projects/edit-todo/{{ todo.id }}/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+        <img draggable="true" ondragstart="drag(event)" id="move_{{ list.id }}_{{ todo.id }}" src="/static/images/move.png" width="18" height="18" border="0" />
+        <a href="javascript:void(0);" onclick="deleteTodo('{{ todo.id }}');"><img src="/static/images/bin.png" width="18" height="18" border="0" /></a>
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} /> 
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}">{{ todo.name }}</a>
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+  	  {% endfor %}
+  	{% endif %}
+
+
+    <br />
+    <a onclick="showCompletedTodos('{{ list.id }}');" id="todosDoneLink_{{ list.id }}" href="javascript:void(0);" style="color: #ccc;">Show completed todo items</a>
+    <div id="todosDone_{{ list.id }}" style="display: none;">
+  	{% if list.id in todosDone %}
+  	  {% for todo in todosDone[list.id].itervalues() %}
+      
+        <div id="todo_{{ todo.id }}">
+        
+		<a class="editTodo" href="/projects/edit-todo/{{ todo.id }}/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+        <img draggable="true" ondragstart="drag(event)" id="move_{{ list.id }}_{{ todo.id }}" src="/static/images/move.png" width="18" height="18" border="0" />
+        <a href="javascript:void(0);" onclick="deleteTodo('{{ todo.id }}');"><img src="/static/images/bin.png" width="18" height="18" border="0" /></a>
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} />  
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}" style="text-decoration: line-through; color: #ccc;">{{ todo.name }}</a>
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+        {% endfor %}
+      {% endif %}
+        
+        <br />
+        <a onclick="hideCompletedTodos('{{ list.id }}');" href="javascript:void(0);" style="color: #ccc;">Hide completed todo items</a>
+    </div>
+  	
+  	
+  	</div>
+
+    <div id="addTodoLink_{{ list.id }}">
+  	<br />
+    <img class="arrow" src="/static/images/arrow.jpg" width="18" height="18" border="0" /> <a class="addtodo" href="/projects/create-todo/{{ list.id }}">Add a To-do</a>
+    <br /><br />
+    </div>
+  {% endfor %}
+  
+  <hr /> <br />
+  
+  <h2>Files</h2> <br /> <hr /> <br />
+  
+  {% for file, user in projectFiles %}
+  	<div style="float: left; width: 100px; border-right: 1px solid #ccc; margin-right: 5px;">{{ user.username }}</div>
+  	<div style="float: left; width: 500px; border-right: 1px solid #ccc; margin-right: 5px;"><a href="{{ file.url }}">{{ file.name }}</a></div>
+  	<br />
+  	<hr style="width: 100%; color: #009900;" /> 
+  	<br />
+  {% endfor %}
+  
+  {% endif %} 
+
+<script>
+ $(document).ready(function(){ 
+ 	$(".addtodo").colorbox({iframe:true, width:"80%", height:"80%"});
+ 	
+ 	$(".editTodo").colorbox({iframe:true, width:"80%", height:"80%"});
+ 	 
+	$(".editList").colorbox({iframe:true, width:"80%", height:"80%"});
+	
+	$(".editProject").colorbox({iframe:true, width:"80%", height:"80%"});
+ });
+ </script>  
+  
+{% endblock %} 

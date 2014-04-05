@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}{{ todoTitle }}{% endblock %}
+{% block content %} 
+
+{% if not blockAccess %}
+  <h1><a href="/projects/show-lists/{{ projectId }}">{{ projectTitle }}</a></h1><br />	
+  <i>from the todo list <a href="/projects/show-list/{{ listId }}">{{ listTitle }}</a></i><hr />	
+  <input onclick="toggleTodoStatus('{{ todoId }}')" type="checkbox" name="todoCheck_{{ todoId }}" id="todoCheck_{{ todoId }}"  {% if status == "Closed" %} checked="checked" {% endif %} />
+  <h3 id="todoTitle_{{ todoId }}" class="inliner" {% if status == "Closed" %} style="text-decoration: line-through; color: #ccc" {% else %} style="color: #369;" {% endif %}>{{ todoTitle }} (<a class="editTodo" href="/projects/edit-todo/{{ todoId }}/{{ listId }}/todoPage">Edit</a>)</h3>
+  <hr /> <br />
+  
+  {% for comment, user in comments %}
+    <div id="commentDiv_{{ comment.id }}">
+  	 {{ comment.comment|nl2br }} 
+  	 
+  	 {% if commentFiles[comment.id] %}
+  	 
+  	 	<br />
+  	 	<a href="{{ commentFiles[comment.id].url }}">{{ commentFiles[comment.id].name }}</a>
+  	 	<br />
+  	 
+  	 {% endif %}
+  	 
+  	 <hr />
+  	 <i>{{ user.username }} - Posted on {{ comment.created }} - <a class="editcomment" href="/projects/edit-comment/{{ comment.id }}">Edit</a> | {% if user.id == loggedinUserId %} <a class="deletecomment" href="javascript:void(0);" onclick="deleteComment('{{ comment.id }}');">Delete</a> {% endif %}</i>
+  	 <hr /> <br />
+  	</div>
+  {% endfor %}
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+ 	<b>Comment added successfully</b><br /><br />
+  {% endif %}
+  
+  <form enctype="multipart/form-data" method="POST" name="addTodoComment" action="/projects/show-todo/{{ todoId }}">
+    Add Comment: <br />
+    <textarea id="addcomment" rows="8" cols="80" name="comment">{{ comment }}</textarea> <br />
+    Upload a file <br />
+    <input name="file" id="fileupload" type="file" /> <br /><br />
+    <input type="hidden" name="todoId" value="{{ todoId }}" />
+    <input type="hidden" name="token" value="{{ token }}" />
+    <input type="submit" name="submit" value="Add Comment" />
+  </form>
+
+<script>
+ $(document).ready(function(){ 
+     $(".editcomment").colorbox({iframe:true, width:"80%", height:"80%"});
+
+ 	 $(".editTodo").colorbox({iframe:true, width:"80%", height:"80%"});
+ });
+ </script>   
+ {% else %}
+ 	<h1>Access Denied</h1><hr /><br />
+  	<b>You do not have access to this todo item</b>
+ {% endif %}
+  	
+{% endblock %}   

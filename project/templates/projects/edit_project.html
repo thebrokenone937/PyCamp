@@ -1,0 +1,28 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/js/jquery.colorbox.js"></script>
+	
+  <h1>Edit Project</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>Project edited successfully</b>
+    
+    <script>
+    	parent.location.href = '/projects/show-lists/{{ projectId }}';
+    	parent.$.fn.colorbox.close();
+    </script>
+  {% else %}
+  
+  <form method="POST" name="editProject" action="/projects/edit-project/{{ projectId }}">
+      Name: <input type="text" name="name" value="{{ name }}" /><br />
+      Description: <br />
+      <textarea name="description" rows="10" cols="80">{{ description }}</textarea> <br />
+   <input type="hidden" name="projectId" value="{{ projectId }}" />
+   <input type="hidden" name="token" value="{{ token }}" />
+   <br /><input type="submit" name="submit" value="Edit" />
+  </form>
+  
+  {% endif %}

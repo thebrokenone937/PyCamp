@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block title %}Add Users to Project{% endblock %}
+{% block content %} 
+
+  {% if project.id %}		
+  <h1><a href="/projects/show-lists/{{ project.id }}">{{ project.name }}</a></h1><br />
+  <hr />
+  {% else %}
+  <h1>Could not find project</h1>
+  {% endif %}
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if usersToAdd %}
+  	{% for id in usersToAdd %}
+  		{{ usersToAdd[id] }} added to project <br />
+  	{% endfor %}
+  {% endif %}
+  
+  {% if usersNotAdded %}
+  	{% for email in usersNotAdded %}
+  		{{ usersNotAdded[email] }} not added to project <br />
+  	{% endfor %}
+  {% endif %}
+  
+  {% if not blockAccess %}
+  <form method="POST" name="addUsersToProject" action="/projects/add-users-to-project/id/{{ project.id }}">
+  	<input type="hidden" id="count" name="count" value="3" />
+  	<input type="hidden" name="token" value="{{ token }}" />
+  	<input type="hidden" name="projectId" value="{{ project.id }}" />
+  	
+  	<div id="emailsBox">
+  		<input type="text" name="email_1" value="" /> <br />
+  		<input type="text" name="email_2" value="" /> <br />
+  		<input type="text" name="email_3" value="" /> <br />
+  	</div>
+  	
+  	<br />
+  	<input type="submit" name="submit" value="Add Users" />
+  </form>
+    
+<script type="text/javascript">
+ 	
+ 	$('input').click(function() {
+ 		var name = $(this).attr("name");
+ 		
+ 		if ( name.search("email_") === 0 ) {
+ 			addEmailField(name);
+ 		}
+ 	});
+ 
+	function addEmailField(name)
+	{
+		var field = name.replace("email_", "");
+		
+		field = parseInt(field);
+		
+		var count = parseInt($('#count').val());
+		//alert( field + "--" + count );
+		if ( field >= count ) {
+			count = count + 1;
+			
+			$('#count').val(count);
+			
+			var container = document.getElementById("emailsBox");
+			
+			// Append a node with a random text
+	        //container.appendChild(document.createTextNode("Email " + (count)));
+	        // Create an <input> element, set its type and name attributes
+	        var input = document.createElement("input");
+	        
+	        input.type = "text";
+	        input.name = "email_" + count;
+	        //input.onclick = function() { addEmailField('email_" + count + "'); };
+	        
+	        container.appendChild(input);
+	        
+	        input.addEventListener('click', function(){ addEmailField('email_" + count + "'); }, false);
+	        
+	        
+	        // Append a line break 
+	        container.appendChild(document.createElement("br"));
+		}
+	}
+</script>    
+{% endif %}    
+{% endblock %}

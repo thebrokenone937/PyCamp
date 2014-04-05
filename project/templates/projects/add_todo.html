@@ -1,0 +1,45 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/js/jquery.colorbox.js"></script>
+	
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>Todo item created successfully</b>
+    
+    <script>
+    	parent.displayList('{{ listId }}');
+    	parent.$.fn.colorbox.close();
+    </script>
+  {% else %}
+  	{% if not blockAccess %}
+		  <form method="POST" name="addTodo" action="/projects/add-todo">
+		   Name: <input type="text" name="name" value="{{ name }}" /> <br />
+		   <input type="hidden" name="listId" value="{{ listId }}" />
+		   <input type="hidden" name="token" value="{{ token }}" />
+		   
+		   Priority: 
+		   
+		   <select name='priorityLevel'>
+		   	<option value=''>Choose Priority Level</option>
+		   	{% for priority in priorityLevels %}
+		   	 <option value='{{ priority.id }}' {% if priority.id == priorityLevel %} selected="selected" {% endif %} >{{ priority.priority }}</option> 
+		   	{% endfor %}
+		   </select>
+		   
+		   <br />
+		   
+		   Due Date <input type="text" name="dueDate" value="{{ dueDate }}" /> <br />
+		   
+		   Assign To: <select name="todoUser">
+      		{% for project, user in projectUsers %}
+      		<option value="{{ user.id }}" {% if todoUser == user.id %} selected="selected" {% endif %} >{{ user.username }}</option>  
+         
+      		{% endfor %}
+      		</select>
+		   <br />
+		   <input type="submit" name="submit" value="Create" />
+		  </form>
+	 {% endif %}	  
+  {% endif %}

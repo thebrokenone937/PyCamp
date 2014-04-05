@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %} 
+  <h1>Projects</h1>
+  
+  {% for projectUsers, project in projects %}
+    <a href="/projects/show-lists/{{ project.id }}">{{ project.name }}</a> <br />
+    <i>{{ project.description }}</i> <br /><hr /><br />
+  {% endfor %}
+  
+{% endblock %}  

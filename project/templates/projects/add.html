@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Create Project{% endblock %}
+{% block content %} 
+  <h1>Create Project</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>Project created successfully</b>
+  {% else %}
+  <form method="POST" name="addProject" action="/projects/add">
+   Name: <input type="text" name="name" value="{{ name }}" /> <br />
+   Description: <br />
+   <textarea rows="10" cols="50" name="description">{{ description }}</textarea> <br />
+   
+   Priority: 
+   
+   <select name='priorityLevel'>
+   	<option value=''>Choose Priority Level</option>
+   	{% for priority in priorityLevels %}
+   	 <option value='{{ priority.id }}' {% if priority.id == priorityLevel %} selected="selected" {% endif %} >{{ priority.priority }}</option> 
+   	{% endfor %}
+   </select>
+   
+   <br />
+   
+   Due Date <input type="text" name="dueDate" value="{{ dueDate }}" /> <br />
+   <input type="hidden" name="token" value="{{ token }}" />
+   <input type="submit" name="submit" value="Create" />
+  </form>
+  {% endif %}
+
+{% endblock %}

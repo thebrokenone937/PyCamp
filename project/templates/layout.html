@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+	<meta name="description" content="The Perfect 2 Column Liquid Layout (right menu): No CSS hacks. SEO friendly. iPhone compatible." />
+	<meta name="keywords" content="The Perfect 2 Column Liquid Layout (right menu): No CSS hacks. SEO friendly. iPhone compatible." />
+	<meta name="robots" content="index, follow" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="stylesheet" type="text/css" href="/static/css/screen.css" media="screen" />
+	<link rel="stylesheet" href="/static/css/colorbox.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="/static/js/jquery.colorbox.js"></script>
+	<script src="/static/js/functions.js"></script>
+</head>
+<body>
+
+<div id="header">
+	<h1>PyCamp</h1>
+	<h2>Basecamp recoded in Python.</h2>
+
+	<ul>
+		<li><a href="/projects/list-projects">Projects</a></li>
+		<li><a href="#">Account</a></li>
+	</ul>
+	<p id="layoutdims">{% if loggedinUsername %}<a href="/login/logout">Logout</a> | <strong>Logged in as: {{ loggedinUsername }} {% else %}<a href="/login">Login</a> | <a href="/register">Register</a>{% endif %}</strong></p>
+
+</div>
+<div class="colmask rightmenu">
+	<div class="colleft">
+		<div class="col1">
+			{% block content %}{% endblock %}
+			<!-- Column 1 end -->
+		</div>
+		<div class="col2">
+			<!-- Column 2 start -->
+			
+			<h2>Navigation</h2>
+			{% if loggedinUsername %}
+				<p><a href="/projects/create">New Project</a></p>
+			{% endif %}
+			
+			{% if projectId %}
+				<p><a href="/projects/add-users-to-project/id/{{ projectId }}">Add Users to project</a></p>
+			{% endif %}
+			
+			{% if projectUsers %}
+				<h2>Project Users</h2>
+				{% for projectUser, user in projectUsers %}
+					<a href="/projects/list-user-items/{{ user.id }}">{{ user.username }}</a> <br />
+				{% endfor %}
+			{% endif %}
+			
+            {% if lists %}
+                <h2>Project Todo Lists</h2>
+                {% for list in lists %}
+                <a href="/projects/show-list/{{ list.id }}" class="todolist">{{ list.name }}</a><br />
+                {% endfor %}
+            {% endif %}
+		</div>
+	</div>
+</div>
+<div id="footer">
+	<p>Pycamp - 2013</p>
+</div>
+
+</body>
+</html>

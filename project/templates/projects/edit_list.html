@@ -1,0 +1,40 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/js/jquery.colorbox.js"></script>
+	
+  <h1>Edit List</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>List edited successfully</b>
+    
+    <script>
+    	parent.displayList('{{ listId }}');
+    	parent.$.fn.colorbox.close();
+    </script>
+  {% else %}
+  
+  <form method="POST" name="editList" action="/projects/edit-list/{{ listId }}">
+      <input type="text" name="name" value="{{ name }}" /><br />
+      Priority: 
+		   
+	  <select name='priorityLevel'>
+	  <option value=''>Choose Priority Level</option>
+	  {% for priority in priorityLevels %}
+		  <option value='{{ priority.id }}' {% if priority.id == priorityLevel %} selected="selected" {% endif %} >{{ priority.priority }}</option> 
+	  {% endfor %}
+      </select>
+		   
+      <br />
+		   
+	  Due Date <input type="text" name="dueDate" value="{{ dueDate }}" /> <br />
+		   
+      <br />
+   <input type="hidden" name="listId" value="{{ listId }}" />
+   <input type="hidden" name="token" value="{{ token }}" />
+   <br /><input type="submit" name="submit" value="Edit" />
+  </form>
+  
+  {% endif %}

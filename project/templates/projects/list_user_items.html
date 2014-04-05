@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}User Tasks for {{ user.username }}{% endblock %}
+{% block content %} 
+  <h1>User Tasks for {{ user.username }}</h1><br />	
+  
+  {% if not error %} 
+  {% for project in projects.itervalues() %}
+  <h1><a href="/projects/show-lists/{{ project.id }}">{{ project.name }}</a></h1><br />	
+  
+  {% if project.id in lists %}
+  {% for list in lists[project.id].itervalues() %}
+  	<div id="list_{{ list.id }}">
+  	<a href="/projects/show-list/{{ list.id }}" class="todolist">{{ list.name }}</a>
+  	<br /><br />
+  	
+  	{% if project.id in todos %}
+  	{% if list.id in todos[project.id] %}
+  	  {% for todo in todos[project.id][list.id].itervalues() %}
+        <div id="todo_{{ todo.id }}">
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} /> 
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}">{{ todo.name }}</a>
+  	    
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+  	  {% endfor %}
+  	{% endif %}
+  	{% endif %}
+  	
+  	{% if project.id in todosDone %}
+  	{% if list.id in todosDone[project.id] %}
+  	  {% for todo in todosDone[project.id][list.id].itervalues() %}
+        <div id="todo_{{ todo.id }}"> 
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} />  
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}" style="text-decoration: line-through; color: #ccc;">{{ todo.name }}</a>
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+  	  {% endfor %}
+  	{% endif %}
+  	{% endif %}
+  	
+  	
+  	</div>
+  	
+  <br /><br />
+  {% endfor %}
+  {% endif %}
+   
+  {% endfor %}
+  {% else %}
+
+  <h2>Error</h2>
+  <br /><br />
+  <b>{{ error }}</b>
+
+  {% endif %} 
+
+  
+{% endblock %} 

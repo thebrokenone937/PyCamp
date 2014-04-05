@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Create List for project {{ projectTitle }}{% endblock %}
+{% block content %} 
+  <h1>Create List for project {{ projectTitle }}</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+  
+  {% if success %}
+    <b>List created successfully</b>
+  {% else %}
+  	{% if not blockAccess %}
+		  <form method="POST" name="addList" action="/projects/add-list">
+		   Name: <input type="text" name="name" value="{{ name }}" /> <br />
+		   <input type="hidden" name="projectId" value="{{ projectId }}" />
+		   <input type="hidden" name="token" value="{{ token }}" />
+		   
+		   Priority: 
+		   
+		   <select name='priorityLevel'>
+		   	<option value=''>Choose Priority Level</option>
+		   	{% for priority in priorityLevels %}
+		   	 <option value='{{ priority.id }}' {% if priority.id == priorityLevel %} selected="selected" {% endif %} >{{ priority.priority }}</option> 
+		   	{% endfor %}
+		   </select>
+		   
+		   <br />
+		   
+		   Due Date <input type="text" name="dueDate" value="{{ dueDate }}" /> <br />
+		   
+		   <input type="submit" name="submit" value="Create" />
+		  </form>
+	 {% endif %}		  
+  {% endif %}
+
+{% endblock %}

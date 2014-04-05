@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}{{ projectTitle }}{% endblock %}
+{% block content %} 
+  <h1><a href="/projects/show-lists/{{ projectId }}">{{ projectTitle }}</a></h1><br />	
+  <i>{{ description }}</i> <br /> <hr /> <br />
+  
+  {% if not error %} 
+  
+  <h2 class="inliner">To-Do List</h2> 
+  
+  <br /><br />
+  
+  {% for list in lists %}
+  	<div id="list_{{ list.id }}">
+  	
+	<a class="editList" href="/projects/edit-list/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+  	<a href="/projects/show-list/{{ list.id }}" class="todolist">{{ list.name }}</a>
+  	<br /><br />
+  	{% if list.id in todos %}
+  	  {% for todo in todos[list.id].itervalues() %}
+        <div id="todo_{{ todo.id }}">        
+		<a class="editTodo" href="/projects/edit-todo/{{ todo.id }}/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+        <a href="javascript:void(0);" onclick="deleteTodo('{{ todo.id }}');"><img src="/static/images/bin.png" width="18" height="18" border="0" /></a>
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} /> 
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}">{{ todo.name }}</a>
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+  	  {% endfor %}
+  	{% endif %}
+  	
+  	{% if list.id in todosDone %}
+  	  {% for todo in todosDone[list.id].itervalues() %}
+        <div id="todo_{{ todo.id }}">
+		<a class="editTodo" href="/projects/edit-todo/{{ todo.id }}/{{ list.id }}"><img src="/static/images/edit.png" width="18" height="18" border="0" /></a>           
+        <a href="javascript:void(0);" onclick="deleteTodo('{{ todo.id }}');"><img src="/static/images/bin.png" width="18" height="18" border="0" /></a>
+        <input onclick="toggleTodoStatus('{{ todo.id }}')" type="checkbox" name="todoCheck_{{ todo.id }}" id="todoCheck_{{ todo.id }}"  {% if todo.status == "Closed" %} checked="checked" {% endif %} />  
+  	    <a id="todoTitle_{{ todo.id }}" href="/projects/show-todo/{{ todo.id }}" style="text-decoration: line-through; color: #ccc;">{{ todo.name }}</a>
+  	    
+  	    {% if todoComments[todo.id] > 0 %}
+  	    	<a href="/projects/show-todo/{{ todo.id }}">({{ todoComments[todo.id] }} comments)</a>
+  	    {% endif %}
+  	    
+        <br />
+        </div>
+  	  {% endfor %}
+  	{% endif %}
+  	
+  	
+  	</div>
+  	
+  {% endfor %}
+
+  {% else %}
+
+  <h2>Error</h2>
+  <br /><br />
+  <b>{{ error }}</b>
+
+  {% endif %} 
+
+ <script>
+ $(document).ready(function(){ 
+ 	 $(".editTodo").colorbox({iframe:true, width:"80%", height:"80%"});
+ 	 
+	 $(".editList").colorbox({iframe:true, width:"80%", height:"80%"});
+ });
+ </script>  
+        
+{% endblock %} 

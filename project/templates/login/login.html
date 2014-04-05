@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block content %} 
+  <h1>Login</h1>
+  
+  {% if error %}
+ 	<b>{{ error }}</b><br /><br />
+  {% endif %}
+ 
+  <form method="POST" name="login" action="/login/login">
+   Username: <input type="text" name="username" value="{{ username }}" /> <br />
+   Password: <input type="password" name="password" value="" /> <br />
+   <input type="hidden" name="token" value="{{ token }}" />
+   <input type="submit" name="submit" value="Login" />
+  </form>
+{% endblock %}
