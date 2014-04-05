@@ -11,21 +11,37 @@ This application is loosely based on basecamp. I find basecamp useful for managi
 The application will let you:
 
 Login and Register
+
 Create New Projects
+
 Edit Projects
+
 Add Todo Lists
+
 Edit Todo Lists
+
 Delete Todo Lists
+
 Add Todo Items
+
 Edit Todo Items
+
 Delete Todo Items
+
 Add Comments to Todo Items
+
 Edit Comments
+
 Delete Comments
+
 Upload Files
+
 Add Users to Projects (There's currently a javascript bug in this feature though that limits you to adding 4 users)
+
 View Project Summary Screen
+
 View Todo Comments
+
 Show Todo Items Assigned to a particular user
 
 Testing
