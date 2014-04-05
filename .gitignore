@@ -33,6 +33,7 @@ htmlcov/
 .tox/
 .coverage
 .cache
+.project/cache
 nosetests.xml
 coverage.xml
 
