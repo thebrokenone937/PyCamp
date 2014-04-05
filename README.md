@@ -20,13 +20,15 @@ Add Todo Lists
 
 Edit Todo Lists
 
-Delete Todo Lists
+Delgete Todo Lists
 
 Add Todo Items
 
 Edit Todo Items
 
 Delete Todo Items
+
+Drag and drop todo items into different Lists
 
 Add Comments to Todo Items
 
@@ -56,6 +58,6 @@ Notes:
 
 I haven't added email sending functionality for things like registration confirmation and the forgot password link yet. I need to add links to the register & forgot password pages also.
 
-I could add a few more features like email notifications to users that subscribe to todo items. Search functionality, change password, that sort of thing.
+I could add a few more features like email notifications to users that subscribe to todo items. Search functionality, change password, Ordering of todo items/Lists that sort of thing.
 
 Finally you'll need to change the database settings in engine.py under the models directory to get this working on your machine. The database settings should probably be loaded from config files with different files for different environments but that's a future task.
